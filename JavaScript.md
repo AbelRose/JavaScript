@@ -110,45 +110,157 @@
     >
     > /* 这是一个字符串，不支持strict模式的浏览器会把它当做一个字符串语句执行，支持strict模式的浏览器将开启strict模式运行JavaScript */
 
-    
+- 字符串: 转义 \n表示换行 \t表示制表符 \本身也要转义 \\ 还可以表示ASCII码或者Unicode字符 多行字符串用反引号 `` 表示。
 
+  > *需要特别注意的是*，字符串是不可变的(数组里的元素时可以变化的)，如果对字符串的某个索引赋值，不会有任何错误，但是，也没有任何效果 
+  >
+  > ```js
+  > <script>
+  >             var s = 'Test';
+  >             s[0] = 'X';
+  >             alert(s); // s仍然为'Test'
+  >         </script>
+  > ```
+  >
+  > 
 
+  模板字符串: 自动替换变量${} 
 
+- 数组: *请注意*，直接给`Array`的`length`赋一个新的值会导致`Array`大小的变化：
 
+  `Array`可以通过索引把对应的元素修改为新的值，因此，对`Array`的索引进行赋值会直接修改这个`Array`：
 
+  >*请注意*，如果通过索引赋值时，索引超过了范围，同样会引起`Array`大小的变化
+  >
+  >还句话说, JavaScript 的数组是允许越界的 和很多其他语言不同
 
+  *slice()方法: 如果里面什么都不传的话 就会从头到尾街区所有的元素，常用做**数组的复制***
 
+  ```
+  var arr = [1, 2, 3];
+  var arr_copy = arr.slicr();
+  ```
 
+  push() 和 pop() 
 
+  push(): 向Array() 的***末尾***添加若干元素 pop() 把Array() 的***末尾最后一个元素***抹掉
 
+  ubshift() 和 shift()
 
+  unshift() 向Array() 的***头部***添若干元素 shift() 向把***头部第一个元素***删掉
 
+  splice() 是修改Array的***“万能方法“*** 从指定的索引开始删除若干元素，然后再从该位置添加若干元素：
 
+  concat() 连接数组 并返回一个新的数组(并没有修改 ) 实际上，`concat()`方法可以接收任意个元素和`Array`，并且自动把`Array`拆开，然后全部添加到新的`Array`里
 
+  join`join()`方法是一个非常实用的方法，它把当前`Array`的每个元素都***用指定的字符串连接***起来，然后返回连接后的字符串：
 
+  ```
+  var arr = ['A', 'B', 'C', 1, 2, 3];
+  arr.join('-'); // 'A-B-C-1-2-3'
+  ```
 
+  如果`Array`的元素不是字符串，将***自动转换为字符串***后再连接。
 
+- 对象: 一种无序的集合数据类型 由若干个键值对组成(用于描述现实世界的某个对象)
 
+  用 var xxx {...} 表示 如果用到了属性 直接用xxx.属性名就可以了. 属性名都是字符串 属性的值可以是任意数据类型
 
+  > 注意如果属性名 包含其他的特殊字符 就必须用''扩起来 用['属性名']来访问 xxx['属性名']
 
+  检测对象是否含有某个属性，用in 操作符。 '属性名' in xxx 
 
+  > 如果`in`判断一个属性存在，这个属性不一定是对象的，它可能是对象继承得到的
+  >
+  > 判断是否对象自身自带而不是继承的，用hasOwnProperty() 方法
 
+- if判断
 
+  如果`if`的条件判断语句结果不是`true`或`false`怎么办？例如：
 
+  ```js
+  var s = '123';
+  if (s.length) { // 条件计算结果为3 不是0
+      //
+  }
+  ```
 
+  JavaScript把`null`、`undefined`、`0`、`NaN`和空字符串`''`视为`false`，其他值一概视为`true`，因此上述代码条件判断的结果是`true`。
 
+- 循环
 
+  for...in... 可以把一个对象的***所有属性***一次循环出来(若要滤掉继承的属性用hashOwnProperty())
 
+  ```js
+  for (var key in o) {
+      if (o.hasOwnProperty(key)) {
+          console.log(key); // 'name', 'age', 'city'
+      }
+  }
+  ```
 
+  > for...in... 对***Array***的循环得到的是***String***而不是Number
 
+- Map 和 Set
 
+  JavaScript的默认对象表示方式`{}`可以视为其他语言中的`Map`或`Dictionary`的数据结构，即一组键值对。
 
+  但是他的***键必须是String***，但有时候要用到其他数据类型来表示键。引入了Map和Set的概念
 
+  Map() 初始化Map() 需要一个***二维数组*** 或者直接初始化一个空的Map var map = ***new Map()***;
 
+  Set() key不可以重复只存储key 不存value
 
+- Iterable
 
+  遍历Array可以采用下标循环 但是遍历Map和Set无法使用下标 通过***for...of*** 遍历
 
+  `for ... of`循环和`for ... in`循环有何区别？
 
+  for...in 遍历的是对象的属性名称 (Array其实也是一个对象)
+
+  当我们手动给`Array`对象添加了额外的属性后，`for ... in`循环将带来意想不到的意外效果：
+
+  ```js
+  var a = ['A', 'B', 'C'];
+  a.name = 'Hello';
+  for (var x in a) {
+      console.log(x); // '0', '1', '2', 'name'
+  }
+  ```
+
+  for ... of 循环则完全修复了这些问题，它只循环集合本身的元素：
+
+  ```js
+  var a = ['A', 'B', 'C'];
+  a.name = 'Hello';
+  for (var x of a) {
+      console.log(x); // 'A', 'B', 'C'
+  }
+  ```
+
+  > 然而，更好的方式是直接使用`iterable`内置的`forEach`方法，它接收一个函数，每次迭代就自动回调该函数。以`Array`为例：
+  >
+  > ```js
+  > 'use strict'; var a = ['A', 'B', 'C']; 
+  > a.forEach(function (element, index, array) {
+  >     // element: 指向当前元素的值
+  >     // index: 指向当前索引
+  >     // array: 指向Array对象本身
+  >     console.log(element + ', index = ' + index);
+  > });
+  > ```
+
+  如果对某些参数不感兴趣，由于JavaScript的函数调用不要求参数必须一致，因此可以忽略它们。
+
+  例如，只需要获得`Array`的`element`：
+
+  ```js
+  var a = ['A', 'B', 'C'];
+  a.forEach(function (element) {
+      console.log(element);
+  });
+  ```
 
 
 
