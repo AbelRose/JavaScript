@@ -333,19 +333,48 @@
 
   局部作用域: JS的变量作用域是函数内部 而语句块中是无法定义具有局部作用域的变量的 所以在ES6的时候新加了一个let关键字 可以声明一个块级别的变量
 
+  常量: const  
+
+  解构赋值: 同时对一组变量进行赋值(若从一个对象中取到若干属性也可使用 var{name, age, passport} = person) 使用场景是交换两个变量的值或者获取当前页面的域名和路径
+
+- 方法: 绑定到对象的函数称为方法。
+
+  > 用`var that = this;`，你就可以放心地在方法内部定义其他函数，而不是把所有语句都堆到一个方法中。
+  >
+  > 要***指定*** 函数的`this`指向哪个对象，可以用函数本身的`apply`方法，它接收两个参数，
+  >
+  > 第一个参数就是需要绑定的`this`变量，第二个参数是`Array`，表示函数本身的参数。
+  >
+  > 另一个与`apply()`类似的方法是`call()`，唯一区别是：
+  >
+  > - `apply()`把参数打包成`Array`再传入；
+  > - `call()`把参数按顺序传入。
+
+  装饰器; 利用apply() 还可以改变函数的行为。JavaScript的所有对象都是动态的 即使是内置的函数也可以重新指向新的函数
+
+  现在假定我们想统计一下代码一共调用了多少次`parseInt()`，可以把所有的调用都找出来，然后手动加上`count += 1`，不过这样做太傻了。最佳方案是用我们自己的函数替换掉默认的`parseInt()`：
+
+  ```js
+  'use strict';
   
+  var count = 0;
+  var oldParseInt = parseInt; // 保存原函数
+  
+  window.parseInt = function () {
+      count += 1;
+      return oldParseInt.apply(null, arguments); // 调用原函数
+  };
+  ```
 
+  ```js
+  // 测试:
+  parseInt('10');
+  parseInt('20');
+  parseInt('30');
+  console.log('count = ' + count); // 3
+  ```
 
-
-
-
-
-
-
-
-
-
-
+  
 
 
 
