@@ -380,9 +380,26 @@
 
   reduce: 把一个函数作用在这个`Array`的`[x1, x2, x3...]`上，这个函数必须***接收两个参数***，`reduce()`把结果继续和序列的下一个元素做***累积计算***。
 
+- filter:  把`Array`的某些元素过滤掉，然后返回剩下的元素。`filter()`把传入的函数依次作用于每个元素，然后根据返回值是`true`还是`false`决定保留还是丢弃该元素。filter()接收的回调函数，其实可以有多个参数。var r = arr.filter(function (element, index, self) 去重:     return self.indexOf(element) === index;
+
+- sort:  和正常的排序不同.`Array`的`sort()`方法默认把所有元素先转换为String再排序，结果`'10'`排在了`'2'`的前面，因为字符`'1'`比字符`'2'`的ASCII码小。 `sort()`方法也是一个高阶函数，它还可以接收一个比较函数来实现自定义的排序。 
+
+  ```js
+  arr.sort(function (x, y) {
+      if (x < y) {
+          return -1; // 若是倒序的 则 return 1
+      }
+      if (x > y) {
+          return 1;  // 若是倒序的 则 return -1
+      }
+      return 0;
+  ```
+
   
 
+  Array:  `every()`方法可以判断数组的所有元素是否满足测试条件。  
 
+  ​		   `find()`方法用于查找符合条件的第一个元素，如果找到了，返回这个元素，否则，返回`undefined`： 
 
 
 
