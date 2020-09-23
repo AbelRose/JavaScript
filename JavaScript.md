@@ -401,9 +401,69 @@
 
   ​		   `find()`方法用于查找符合条件的第一个元素，如果找到了，返回这个元素，否则，返回`undefined`： 
 
+- 闭包: 函数作为返回值。
 
+  ```js
+  function lazy_sum(arr) {
+      var sum = function () {
+          return arr.reduce(function (x, y) {
+              return x + y;
+          });
+      }
+      return sum; // 返回的不是结果而是求和函数 当调用f()的时候才真正计算求和的结果
+  }
+  ```
 
+  在这个例子中，我们在函数`lazy_sum`中又定义了函数`sum`，并且，内部函数`sum`可以引用外部函数`lazy_sum`的参数和局部变量，当`lazy_sum`返回函数`sum`时，相关参数和变量都保存在返回的函数中，这种称为“闭包（Closure）”的程序结构拥有极大的威力。
 
+  > 每次调用lazy_sum() 的时候 都会返回一个新的函数 (即使传入相同的参数)
+
+  在没有`class`机制，只有函数的语言里，借助闭包，同样可以封装一个私有变量。我们用JavaScript创建一个计数器：
+
+  ```js
+  'use strict';
+  
+  function create_counter(initial) {
+      var x = initial || 0;
+      return {
+          inc: function () {
+              x += 1;
+              return x;
+          }
+      }
+  }
+  ```
+
+- 箭头函数 
+
+  ```js
+  x => x * x
+  ```
+
+  ```js
+  x => { // 若是多个参数x, y 用(x, y) 括号括起来 
+      if (x > 0) {
+          return x * x;
+      }
+      else {
+          return - x * x;
+      }
+  }
+  ```
+
+  > 箭头函数内部的`this`是词法作用域，由上下文确定。总是指向词法作用域，也就是调用者obj
+
+- generator
+
+  generator和函数不同的是，generator由`function*`定义（注意多出的`*`号），并且，除了`return`语句，还可以用`yield`返回多次。
+
+  调用方法: var f = fib(); f.next(); 
+
+  `next()`方法会执行generator的代码，然后，每次遇到`yield x;`就返回一个对象`{value: x, done: true/false}`，然后“暂停”。返回的`value`就是`yield`的返回值，`done`表示这个generator是否已经执行结束了。如果`done`为`true`，则`value`就是`return`的返回值。
+
+  当执行到`done`为`true`时，这个generator对象就已经全部执行完毕，不要再继续调用`next()`了。
+
+  调用方法: for...of 不需要自己判断done for( var x of fib(10)) {console.log(x);}
 
 
 
