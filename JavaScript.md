@@ -514,7 +514,175 @@
 
     4. 反序列化:
 
-       拿到一个JSON格式的字符串，我们直接用`JSON.parse()`把它变成一个JavaScript对象：
+       拿到一个JSON格式的字符串，我们直接用`JSON.parse()`把它变成一个JavaScript对象
+
+- 面向对象编程
+
+  类和实例是大多数面向对象编程语言的基本概念。不过，在JavaScript中，这个概念需要改一改。JavaScript不区分类和实例的概念，而是通过***原型（prototype）***来实现面向对象编程。
+
+  ```js
+  xiaoming.__proto__ = Student; // xiaoming 的原型指向了Student
+  ```
+
+  ![xiaoming-prototype](JavaScript.assets/l)
+
+  JavaScript的***原型链***和Java的***Class***区别就在，它没有“Class”的概念，***所有对象都是实例***，所谓继承关系不过是把***一个对象***的原型指向***另一个对象***而已。
+
+  > *请注意*，上述代码仅用于演示目的。在编写JavaScript代码时，不要直接用`obj.__proto__`去改变一个对象的原型
+  >
+  > `Object.create()`方法可以传入一个原型对象，并创建一个基于该原型的新对象，但是新对象什么属性都没有，因此，我们可以编写一个函数来创建`xiaoming`(函数里面有 Object.create(Student) 方法)
+
+  - 创建对象
+
+    JavaScript对每个创建的对象都会设置一个原型，指向它的原型对象。
+
+    当我们用`obj.xxx`访问一个对象的属性时，JavaScript引擎先在***当前对象***上查找该属性，如果没有找到，就到***其原型对象***上找，如果还没有找到，就一直***上溯到`Object.prototype`对象***，最后，如果还没有找到，就只能返回`undefined`。
+
+    > 注意: 不要把prototype 原型链搞得太长
+
+    ```js
+    function Student(name) {
+        this.name = name;
+        this.hello = function () {
+            alert('Hello, ' + this.name + '!');
+        }
+    }
+    ```
+
+    如果不写new 这就是一个普通的函数 如果写了new 就会变成一个构造函数 并返回一个对象 。
+
+    用`new Student()`创建的对象还从原型上获得了一个`constructor`属性，它指向函数`Student`本身
+
+    ![protos](JavaScript.assets/l)
+
+    `xiaoming`和`xiaohong`各自的`hello`是一个函数，但它们是两个不同的函数，虽然函数名称和代码都是相同的！ 把hello函数移动到这些对象的公共原型上就可以了(Student.prototype)
+
+    ![protos2](JavaScript.assets/l)
+
+    > 注意: 调用构造函数千万不要忘记写`new`。
+    >
+    > 为了区分普通函数和构造函数，按照约定，构造函数首字母应当大写，而普通函数首字母应当小写，这样，一些语法检查工具如[jslint](http://www.jslint.com/)将可以帮你检测到漏写的`new`。
+
+    模板:
+
+    ```js
+    // 首字大写 表示一个构造函数
+    function Student(props) {
+        this.name = props.name || '匿名'; // 默认值为'匿名'
+        this.grade = props.grade || 1; // 默认值为1
+    }
+    // 把共有共享方法提取到上一级的prototype
+    Student.prototype.hello = function () {
+        alert('Hello, ' + this.name + '!'); // 有的时候是return 
+    };
+    
+    //封装所有的new方法 不需要new老调用
+    function createStudent(props) {
+        return new Student(props || {})
+    }
+    ```
+
+  - 原型继承
+
+    Student 扩展出 PrimaryStudent
+
+    必须借助一个***中间对象来实现正确的原型链***，这个中间对象的原型要***指向***`Student.prototype`。为了实现这一点，参考***道爷***（就是发明JSON的那个道格拉斯）的代码，***中间对象***可以用一个***空函数`F`***来实现：
+
+    ```js
+    // PrimaryStudent构造函数:
+    function PrimaryStudent(props) {
+        Student.call(this, props);
+        this.grade = props.grade || 1;
+    }
+    
+    // 空函数F:
+    function F() {
+    }
+    
+    // 把F的原型指向Student.prototype:
+    F.prototype = Student.prototype;
+    
+    // 把PrimaryStudent的原型指向一个新的F对象，F对象的原型正好指向Student.prototype:
+    PrimaryStudent.prototype = new F();
+    
+    // 把PrimaryStudent原型的构造函数修复为PrimaryStudent:
+    PrimaryStudent.prototype.constructor = PrimaryStudent;
+    
+    // 继续在PrimaryStudent原型（就是new F()对象）上定义方法：
+    PrimaryStudent.prototype.getGrade = function () {
+        return this.grade;
+    };
+    
+    // 创建xiaoming:
+    var xiaoming = new PrimaryStudent({
+        name: '小明',
+        grade: 2
+    });
+    xiaoming.name; // '小明'
+    xiaoming.grade; // 2
+    
+    // 验证原型:
+    xiaoming.__proto__ === PrimaryStudent.prototype; // true
+    xiaoming.__proto__.__proto__ === Student.prototype; // true
+    
+    // 验证继承关系:
+    xiaoming instanceof PrimaryStudent; // true
+    xiaoming instanceof Student; // true
+    ```
+
+    ![js-proto-extend](JavaScript.assets/l)
+
+    如果把继承这个动作用一个`inherits()`函数封装起来，还可以隐藏`F`的定义，并简化代码：
+
+    ```js
+    function inherits(Child, Parent) {
+        var F = function () {};
+        F.prototype = Parent.prototype;
+        Child.prototype = new F();
+        Child.prototype.constructor = Child;
+    }
+    ```
+
+    小结
+
+    JavaScript的原型继承实现方式就是：
+
+    1. 定义新的构造函数，并在内部用`call()`调用希望“继承”的构造函数，并绑定`this`；
+    2. 借助中间函数`F`实现原型链继承，最好通过封装的`inherits`函数完成；
+    3. 继续在新的构造函数的原型上定义新方法。
+
+  - class继承
+
+    新的关键字`class`从ES6开始正式被引入到JavaScript中。`class`的目的就是让定义类更简单。(注意没有function关键字)
+
+    ```js
+    class Student {
+        constructor(name) {
+            this.name = name;
+        }
+    
+        hello() {
+            alert('Hello, ' + this.name + '!');
+        }
+    }
+    ```
+
+    有extend关键字
+
+    ```js
+    class PrimaryStudent extends Student {
+        constructor(name, grade) {
+            super(name); // 需要通过super(name)来调用父类的构造函数，否则父类的name属性无法正常初始化。
+            this.grade = grade;
+        }
+    
+        myGrade() {
+            alert('I am at grade ' + this.grade);
+        }
+    }
+    ```
+
+    
 
 
 
