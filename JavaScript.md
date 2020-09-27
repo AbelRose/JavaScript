@@ -684,9 +684,17 @@
 
 - 浏览器: 
 
-  
+  - AJAX: Asynchronous JavaScript and XML-  JavaScript执行异步网络请求
 
+    如果要让用户留在当前页面中，同时发出新的HTTP请求，就必须用JavaScript发送这个新请求，接收到数据后，再用JavaScript更新页面，这样一来，用户就感觉自己仍然停留在当前页面，但是数据却可以不断地更新。
 
+    当创建了`XMLHttpRequest`对象后，要先设置`onreadystatechange`的回调函数。在回调函数中，通常我们只需通过`readyState === 4`判断请求是否完成，如果已完成，再根据`status === 200`判断是否是一个成功的响应。
+
+  - CORS: 全称Cross-Origin Resource Sharing，是HTML5规范定义的如何跨域访问资源。
+
+    会检查 Access-Control-Allow-Origin
+
+    ![js-cors](https://www.liaoxuefeng.com/files/attachments/1027024093709472/l)
 
 
 
