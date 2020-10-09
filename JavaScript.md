@@ -696,7 +696,34 @@
 
     ![js-cors](https://www.liaoxuefeng.com/files/attachments/1027024093709472/l)
 
+- jQuery ("Write Less, Do More")
 
+  - 消除浏览器差异
+  - 简洁的操作DOM的方法 
+  - 轻松实现动画、修改CSS等各种操作
+
+  符号
+
+  - $ 是jQuery的别名.本质上就是一个函数也是对象(除了直接调用外 还有很多的其他属性)
+
+    注意: 当发生占用的时候 
+
+    ```js
+    $; // jQuery(selector, context)
+    jQuery.noConflict();
+    $; // undefined
+    jQuery; // jQuery(selector, context)
+    ```
+
+  选择器 (快速定位到一个或者多个DOM节点)
+
+  ​	按ID查找: $('#abc')
+
+  - 层级选择器
+
+    
+
+  - 查找和过滤
 
 
 
