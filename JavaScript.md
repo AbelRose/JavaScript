@@ -755,21 +755,92 @@
 
     `on`方法用来绑定一个事件，我们需要传入事件名称和对应的处理函数。
 
+    鼠标事件: 键盘事件: 
+
+    其他事件: (有一个ready()事件 使用较多)
+
+    ```js
+    $(document).ready(function () {
+        // on('submit', function)也可以简化:
+        $('#testForm).submit(function () {
+            alert('submit!');
+        });
+    });
+    ```
+  
+    甚至可以是
+  
+    ```js
+    // document对象的ready事件处理函数。
+    $(function () {
+        // init...
+    });
+    ```
+  
+    事件参数: mousemove`和`keypress 事件可以绑定到Event上作为参数 
+  
+    取消绑定: off('click', function) 
+  
+    事件触发条件: `change`事件
+  
+    
+  
   - 动画
-
+  
+    show() / hide() / toggle()
+  
+    > toggle根据当前状态决定是show还是hide
+  
+    slideUp() / slideDown() / slideToggle() 
+  
+    > 这个垂直方向的
+  
+    fadeIn() / fadeOut() / fadeToggle()
+  
+    > 淡入淡出效果
+  
+    奥义: animate()
+  
+    ```js
+    var div = $('#test-animate');
+    div.animate({
+        opacity: 0.25,
+        width: '256px',
+        height: '256px'
+    }, 3000, function () {
+        console.log('动画已结束');
+        // 恢复至初始状态:
+        $(this).css('opacity', '1.0').css('width', '128px').css('height', '128px');
+    });
+    ```
+  
+    串行动画: delay() 
+  
+    > 更复杂的动画效果
+  
+    
+  
   - AJAX
+  
+    `ajax(url, settings)`函数需要接收一个URL和一个可选的 `settings`对象
+  
+    > 分别是:async, method, contentType, data, headers, dataType
+  
+    get $.get() 
+  
+    post: $.post()
+  
+    getJSON(): $.getJSON()
+  
+    
+  
+- 错误处理
 
-  - 扩展
+- underscore
 
+- Node.js
 
-
-
-
-
-
-
-
-
+- React
 
 
 
