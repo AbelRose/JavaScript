@@ -850,9 +850,53 @@
 
   > underscore与其类似，会把自身绑定到唯一的全局变量`_`上，这也是为啥它的名字叫underscore的原因。
 
-  - 
+  
 
 - Node.js
+
+  - 环境和配置:
+
+    命令行模式和交互模式(运行js代码)
+
+    我们可以给Nodejs传递一个参数，让Node直接为所有js文件开启严格模式：
+
+    ```shell
+    node --use_strict hello.js
+    ```
+
+    后续代码，如无特殊说明，我们都会直接给Node传递`--use_strict`参数来开启严格模式。
+
+  - 模块:
+
+    在Node环境中，一个.js文件就称之为一个模块（module）。模块名字是这个js文件去掉js后缀。
+
+    CommonJS规范: 
+
+    这种模块加载机制被称为CommonJS规范。在这个规范下，每个`.js`文件都是一个模块，它们内部各自使用的变量名和函数名都互不冲突，例如，`hello.js`和`main.js`都申明了全局变量`var s = 'xxx'`，但互不影响。
+
+    一个模块想要对外暴露变量（函数、对象、数组等也是变量），可以用`module.exports = variable;`，一个模块要引用其他模块暴露的变量，用`var ref = require('module_name');`就拿到了引用模块的变量。
+
+  - 基本模块
+
+    - 全局对象: global
+
+    - 进程: process  如果我们想要在下一次事件响应中执行代码，可以调用`process.nextTick()`
+
+      > 传入`process.nextTick()`的函数不是立刻执行，而是要等到下一次事件循环。
+
+    - 判断JavaScript执行环境: 
+
+      ```js
+      if (typeof(window) === 'undefined') {
+          console.log('node.js');
+      } else {
+          console.log('browser');
+      }
+      ```
+
+      
+
+  - a
 
 - React
 
